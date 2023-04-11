@@ -1,0 +1,19 @@
+<!-- users.html -->
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>{{ column_name }}</th>
+      <th>Email</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+      <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.nickname }}</td>
+        <td>{{ user.email }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
