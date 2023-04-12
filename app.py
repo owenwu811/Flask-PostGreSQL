@@ -7,22 +7,8 @@ from flask_marshmallow import Marshmallow
 from flask_swagger import swagger
 
 app = Flask(__name__)
-app.config['SWAGGER'] = {
-    'title': 'My API',
-    'uiversion': 3
-}
-# ...
 
-
-@app.route('/swagger')
-def api_spec():
-    """Returns the Swagger API specification."""
-    return swagger(app)
-
-if __name__ == '__main__':
-    app.run()
-    
-app = Flask(__name__)
+# Initialize Flask-SQLAlchemy
 app.config['SQLALCHEMY_DATABASE_URI'] = '...'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -49,7 +35,8 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
         model = User
 
 api = Api(app)
-#handler to post data aka add users to the database 
+
+# handler to post data aka add users to the database 
 class Users(Resource):
     def post(self):
         # Get data from request
@@ -64,7 +51,8 @@ class Users(Resource):
         return {'message': 'User created successfully'}, 201
 
 api.add_resource(Users, '/users')
-#handler for put 
+
+# handler for put 
 class UserResource(Resource):
     def put(self, user_id):
         # Get the user from the database
@@ -85,6 +73,7 @@ class UserResource(Resource):
         user_schema = UserSchema()
         user_json = user_schema.dump(user)
         return {'message': 'User updated successfully', 'user': user_json}, 200
+
     def delete(self, user_id):
         # Get the user from the database
         user = User.query.get(user_id)
@@ -96,6 +85,7 @@ class UserResource(Resource):
         db.session.commit()
 
         return {'message': f'User with ID {user_id} deleted successfully'}, 200
+
 
 api.add_resource(UserResource, '/users/<int:user_id>')
 class Onboard(Resource):
@@ -145,7 +135,28 @@ if __name__ == '__main__':
 @app.route('/swagger')
 def api_spec():
     """Returns the Swagger API specification."""
-    return swagger(app)
+    with open("specification.yaml", 'r') as f:
+        spec = f.read()
+    return Response(spec, mimetype="text/plain")
+from flasgger import Swagger
+
+swagger_config = {
+    "headers": [],
+    "specs": [
+        {
+            "endpoint": "apispec_1",
+            "route": "/specification.yaml",
+            "rule_filter": lambda rule: True,  # all in
+            "model_filter": lambda tag: True,  # all in
+        }
+    ],
+    "static_url_path": "/flasgger_static",
+    "swagger_ui": True,
+    "specs_route": "/swagger/",
+    "yaml": "specification.yaml"
+}
+
+swagger = Swagger(app, config=swagger_config)
     # Next, we need to perform database migrations. Database migrations can be thought of like version control systems when you want to rollback a change to the database schema. For example, if you update the class in line 20 to add a new model, you want the PostGreSql database to reflect these changes, so you would perform a database migration.
     #Instructions to perform DataBase Migrations:
     # 1. pip install flask-migrate
