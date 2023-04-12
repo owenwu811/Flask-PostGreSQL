@@ -4,7 +4,24 @@ import requests
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
+from flask_swagger import swagger
 
+app = Flask(__name__)
+app.config['SWAGGER'] = {
+    'title': 'My API',
+    'uiversion': 3
+}
+# ...
+
+
+@app.route('/swagger')
+def api_spec():
+    """Returns the Swagger API specification."""
+    return swagger(app)
+
+if __name__ == '__main__':
+    app.run()
+    
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = '...'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -32,8 +49,7 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
         model = User
 
 api = Api(app)
-
-#added handler to accept post requests from insomnia to add users to postgresql database
+#handler to post data aka add users to the database 
 class Users(Resource):
     def post(self):
         # Get data from request
@@ -48,7 +64,40 @@ class Users(Resource):
         return {'message': 'User created successfully'}, 201
 
 api.add_resource(Users, '/users')
+#handler for put 
+class UserResource(Resource):
+    def put(self, user_id):
+        # Get the user from the database
+        user = User.query.get(user_id)
+        if not user:
+            return {'message': f'User with ID {user_id} not found'}, 404
 
+        # Get data from request
+        data = request.get_json()
+        # Update user data
+        if 'name' in data:
+            user.name = data['name']
+        if 'email' in data:
+            user.email = data['email']
+        db.session.commit()
+
+        # Return updated user data
+        user_schema = UserSchema()
+        user_json = user_schema.dump(user)
+        return {'message': 'User updated successfully', 'user': user_json}, 200
+    def delete(self, user_id):
+        # Get the user from the database
+        user = User.query.get(user_id)
+        if not user:
+            return {'message': f'User with ID {user_id} not found'}, 404
+
+        # Delete the user from the database
+        db.session.delete(user)
+        db.session.commit()
+
+        return {'message': f'User with ID {user_id} deleted successfully'}, 200
+
+api.add_resource(UserResource, '/users/<int:user_id>')
 class Onboard(Resource):
     def post(self):
         # Get data from request
@@ -93,6 +142,10 @@ def get_users():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
+@app.route('/swagger')
+def api_spec():
+    """Returns the Swagger API specification."""
+    return swagger(app)
     # Next, we need to perform database migrations. Database migrations can be thought of like version control systems when you want to rollback a change to the database schema. For example, if you update the class in line 20 to add a new model, you want the PostGreSql database to reflect these changes, so you would perform a database migration.
     #Instructions to perform DataBase Migrations:
     # 1. pip install flask-migrate
