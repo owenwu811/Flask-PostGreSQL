@@ -93,3 +93,17 @@ def get_users():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
+
+    #Instructions to perform DataBase Migrations:
+    # 1. pip install flask-migrate
+    # 2. set FLASK_APP=app.py
+    # 3. from flask_migrate import Migrate
+
+    # ...
+
+    # migrate = Migrate(app, db)
+    # 4. flask db init
+    # 5. flask db migrate -m "initial migration"
+    # 6. flask db upgrade
+    # Step six applies any pending migrations to your database - postgresql in this case, so the migration will be executed within a DDL transaction
+  
