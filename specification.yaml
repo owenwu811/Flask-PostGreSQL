@@ -5,6 +5,17 @@ info:
 
 paths:
   /users:
+    get:
+      summary: Retrieve all users
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
     post:
       summary: Create a new user
       requestBody:
@@ -26,18 +37,25 @@ paths:
           description: User created successfully
         '400':
           description: Invalid input data
+
+  /users/{user_id}:
     get:
-      summary: Retrieve all users
+      summary: Retrieve a specific user
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         '200':
-          description: List of users
+          description: User retrieved successfully
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
-  /users/{user_id}:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
     put:
       summary: Update an existing user
       parameters:
@@ -87,33 +105,6 @@ paths:
           description: User deleted successfully
         '404':
           description: User not found
-  /onboard:
-    post:
-      summary: Onboard a new user
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                email:
-                  type: string
-                team:
-                  type: string
-              required:
-                - name
-                - email
-                - team
-      responses:
-        '201':
-          description: User created successfully
-        '400':
-          description: Invalid input data
-        '500':
-          description: Failed to create user in Terraform Enterprise
 
 components:
   schemas:
