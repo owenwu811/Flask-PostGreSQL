@@ -23,7 +23,7 @@ class TestUsers(unittest.TestCase):
         # Send a POST request to create a user
         response = self.app.post('/users', data=json.dumps({'name': 'John', 'email': 'john@example.com'}), content_type='application/json')
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(User.query.count(), 1)
+        self.assertEqual(User.query.count(), 1) #problem
 
     def test_update_user(self):
         # Create a user
@@ -38,6 +38,24 @@ class TestUsers(unittest.TestCase):
         # Check that the user was updated
         updated_user = User.query.get(user.id)
         self.assertEqual(updated_user.name, 'Jane')
+
+    def test_delete_user(self):
+        # Create a user
+        user = User(name='John', email='john@example.com')
+        db.session.add(user)
+        db.session.commit()
+
+        # Send a GET request to get the user's ID
+        response = self.app.get(f'/users/{user.id}')
+        self.assertEqual(response.status_code, 200) #problem
+
+        # Send a DELETE request to delete the user
+        response = self.app.delete(f'/users/{user.id}')
+        self.assertEqual(response.status_code, 200)
+
+        # Check that the user was deleted
+        deleted_user = User.query.get(user.id)
+        self.assertIsNone(deleted_user)
 
 if __name__ == '__main__':
     unittest.main()
