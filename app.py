@@ -93,7 +93,7 @@ def get_users():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
-
+    # Next, we need to perform database migrations. Database migrations can be thought of like version control systems when you want to rollback a change to the database schema. For example, if you update the class in line 20 to add a new model, you want the PostGreSql database to reflect these changes, so you would perform a database migration.
     #Instructions to perform DataBase Migrations:
     # 1. pip install flask-migrate
     # 2. set FLASK_APP=app.py
