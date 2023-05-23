@@ -8,7 +8,7 @@ from flask_swagger import swagger
 
 app = Flask(__name__)
 
-# Initialize Flask-SQLAlchemy
+# Initialize Flask-SQLAlchemy - set the database connection string and initialize a db object instance
 app.config['SQLALCHEMY_DATABASE_URI'] = '...'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -26,7 +26,7 @@ class User(db.Model):
     name = db.Column(db.String(50))
     email = db.Column(db.String(120))
 
-    def __repr__(self):
+    def __repr__(self): #string representation of instance 
         return '<User %r>' % self.name
 
 # Create a schema for the User model
@@ -41,10 +41,10 @@ class Users(Resource):
     def post(self):
         # Get data from request
         data = request.get_json()
-        # Validate input data
+        # Validate input data 
         if 'name' not in data or 'email' not in data:
             return {'message': 'Invalid input data'}, 400
-        # Add user to the database
+        # Add user to the database if atleast one of the fields is in the request payload
         user = User(name=data['name'], email=data['email'])
         db.session.add(user)
         db.session.commit()
@@ -52,12 +52,13 @@ class Users(Resource):
 
 api.add_resource(Users, '/users')
 
-# handler for put 
+# handler for put request
 class UserResource(Resource):
     def put(self, user_id):
         # Get the user from the database
         user = User.query.get(user_id)
-        if not user:
+        # error handling
+        if not user: #user not found in database
             return {'message': f'User with ID {user_id} not found'}, 404
 
         # Get data from request
