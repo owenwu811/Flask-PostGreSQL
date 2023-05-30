@@ -61,3 +61,4 @@ if __name__ == '__main__':
     unittest.main()
     
 #To execute the unitest, run = python -m unittest discover -s tests - in the VSCode terminal
+#documentation here: https://docs.python.org/3/library/unittest.html
