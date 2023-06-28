@@ -1,10 +1,11 @@
 from flask import Flask, request, render_template
 from flask_restful import Api, Resource
-import requests
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
 from flask_swagger import swagger
+from flasgger import Swagger
+import requests
 
 app = Flask(__name__)
 
@@ -139,7 +140,7 @@ def api_spec():
     with open("specification.yaml", 'r') as f:
         spec = f.read()
     return Response(spec, mimetype="text/plain")
-from flasgger import Swagger
+
 
 swagger_config = {
     "headers": [],
@@ -160,9 +161,9 @@ swagger_config = {
 swagger = Swagger(app, config=swagger_config)
     # Next, we need to perform database migrations. Database migrations can be thought of like version control systems when you want to rollback a change to the database schema. For example, if you update the class in line 20 to add a new model, you want the PostGreSql database to reflect these changes, so you would perform a database migration.
     #Instructions to perform DataBase Migrations:
-    # 1. pip install flask-migrate
-    # 2. set FLASK_APP=app.py
-    # 3. from flask_migrate import Migrate
+    # 1. pip install flask-migrate or pip3 install flask-migrate
+    # 2. set FLASK_APP=app.py or export FLASK_APP=app.py
+    # 3. add to the top: from flask_migrate import Migrate
 
     # ...
 
