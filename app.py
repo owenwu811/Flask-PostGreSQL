@@ -22,6 +22,7 @@ ma = Marshmallow(app)
 
 # Define your models here
 class User(db.Model):
+    #database has a table called users with columns id, name, and email
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
@@ -30,15 +31,16 @@ class User(db.Model):
     def __repr__(self): #string representation of instance 
         return '<User %r>' % self.name
 
-# Create a schema for the User model
+# how to convert object into json and vice versa. dump method lets you convert your object into json and vice versa using the load method. 
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = User
 
 api = Api(app)
 
+#Setting up flask restful api with two classes 
 # handler to post data aka add users to the database 
-class Users(Resource):
+class Users(Resource): - Users handles post 
     def post(self):
         # Get data from request
         data = request.get_json()
@@ -54,7 +56,7 @@ class Users(Resource):
 api.add_resource(Users, '/users')
 
 # handler for put request
-class UserResource(Resource):
+class UserResource(Resource): - handles put + delete to update / delete a user frm the database based on the provided user id 
     def put(self, user_id):
         # Get the user from the database
         user = User.query.get(user_id)
@@ -90,7 +92,7 @@ class UserResource(Resource):
 
 
 api.add_resource(UserResource, '/users/<int:user_id>')
-class Onboard(Resource):
+class Onboard(Resource): #onboarding process to handle creating a new user in Terraform Enterprise and storing that user in the database
     def post(self):
         # Get data from request
         data = request.get_json()
@@ -122,9 +124,9 @@ class Onboard(Resource):
         db.session.commit()
         return {'message': 'User created successfully'}, 201
 
-api.add_resource(Onboard, '/onboard')
+api.add_resource(Onboard, '/onboard') 
 
-@app.route('/users')
+@app.route('/users') #route to fetch all users from database and render data using users.html template 
 def get_users():
     users = User.query.all()
     # Serialize the User objects to JSON
@@ -133,7 +135,8 @@ def get_users():
     return render_template('users.html', users=users_json, column_name='nickname')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True) #running flask app on 5000 with debug mode enabled 
+    
 @app.route('/swagger')
 def api_spec():
     """Returns the Swagger API specification."""
