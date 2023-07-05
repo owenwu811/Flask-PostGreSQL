@@ -2,6 +2,7 @@ import unittest
 from flask import json
 from app import app, db, User
 
+#unittest.TestCase is a class
 class TestUsers(unittest.TestCase):
     def setUp(self):
         app.config['TESTING'] = True
@@ -18,13 +19,13 @@ class TestUsers(unittest.TestCase):
         db.session.commit()
         db.drop_all()
         self.context.pop()
-
+    #creates record in the database
     def test_create_user(self):
         # Send a POST request to create a user
         response = self.app.post('/users', data=json.dumps({'name': 'John', 'email': 'john@example.com'}), content_type='application/json')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(User.query.count(), 1) #problem
-
+    #first creates a user before executing a put request
     def test_update_user(self):
         # Create a user
         user = User(name='John', email='john@example.com')
