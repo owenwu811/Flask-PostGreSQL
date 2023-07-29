@@ -1,0 +1,8 @@
+Flask==1.1.4
+Flask-RESTful==0.3.9
+Flask-SQLAlchemy==2.5.1
+Flask-Migrate==3.1.0
+Flask-Marshmallow==0.15.1
+Flask-Swagger==0.2.14
+Flasgger==0.9.5
+requests==2.26.0
