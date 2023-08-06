@@ -132,10 +132,7 @@ def get_users():
     # Serialize the User objects to JSON
     user_schema = UserSchema(many=True)
     users_json = user_schema.dump(users)
-    return render_template('users.html', users=users_json, column_name='nickname')
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True) #running flask app on 5000 with debug mode enabled 
+    return render_template('users.html', users=users_json, column_name='nickname') 
     
 @app.route('/swagger')
 def api_spec():
@@ -162,6 +159,10 @@ swagger_config = {
 }
 
 swagger = Swagger(app, config=swagger_config)
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True) #running flask app on 5000 with debug mode enabled 
     # Next, we need to perform database migrations. Database migrations can be thought of like version control systems when you want to rollback a change to the database schema. For example, if you update the class in line 20 to add a new model, you want the PostGreSql database to reflect these changes, so you would perform a database migration.
     #Instructions to perform DataBase Migrations:
     # 1. pip install flask-migrate or pip3 install flask-migrate
