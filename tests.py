@@ -1,6 +1,6 @@
-import unittest
 from flask import json
 from app import app, db, User
+import unittest 
 
 #unittest.TestCase is a class
 class TestUsers(unittest.TestCase):
