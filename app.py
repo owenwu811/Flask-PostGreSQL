@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template
-from flask_restful import Api, Resource
+#from flask-restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
@@ -36,11 +36,9 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = User
 
-api = Api(app)
-
 #Setting up flask restful api with two classes 
 # handler to post data aka add users to the database 
-class Users(Resource): - Users handles post 
+class Users(Resource): # Users handles post 
     def post(self):
         # Get data from request
         data = request.get_json()
@@ -56,7 +54,7 @@ class Users(Resource): - Users handles post
 api.add_resource(Users, '/users')
 
 # handler for put request
-class UserResource(Resource): - handles put + delete to update / delete a user frm the database based on the provided user id 
+class UserResource(Resource): # handles put + delete to update / delete a user frm the database based on the provided user id 
     def put(self, user_id):
         # Get the user from the database
         user = User.query.get(user_id)
