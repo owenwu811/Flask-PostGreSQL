@@ -12,22 +12,13 @@ app = Flask(__name__)
 # Initialize Flask-SQLAlchemy - set the database connection string and initialize a db object instance
 app.config['SQLALCHEMY_DATABASE_URI'] = '...'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
-# Initialize Flask-Migrate
-migrate = Migrate(app, db)
-
-# Initialize Flask-Marshmallow
-ma = Marshmallow(app)
+db, migrate, ma = SQLAlchemy(app), Migrate(app, db), Marshmallow(app)
 
 # Define your models here
 class User(db.Model):
     #database has a table called users with columns id, name, and email
     __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
-    email = db.Column(db.String(120))
-
+    id, name, email = db.Column(db.Integer, primary_key=True), db.Column(db.String(50)), db.Column(db.String(120))
     def __repr__(self): #string representation of instance 
         return '<User %r>' % self.name
 
@@ -126,10 +117,7 @@ api.add_resource(Onboard, '/onboard')
 
 @app.route('/users') #route to fetch all users from database and render data using users.html template 
 def get_users():
-    users = User.query.all()
-    # Serialize the User objects to JSON
-    user_schema = UserSchema(many=True)
-    users_json = user_schema.dump(users)
+    users, user_schema, users_json = User.query.all(), UserSchema(many=True), user_schema.dump(users)
     return render_template('users.html', users=users_json, column_name='nickname') 
     
 @app.route('/swagger')
