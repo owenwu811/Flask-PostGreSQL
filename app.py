@@ -10,8 +10,7 @@ import requests
 app = Flask(__name__)
 
 # Initialize Flask-SQLAlchemy - set the database connection string and initialize a db object instance
-app.config['SQLALCHEMY_DATABASE_URI'] = '...'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'], app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = '...', False
 db, migrate, ma = SQLAlchemy(app), Migrate(app, db), Marshmallow(app)
 
 # Define your models here
